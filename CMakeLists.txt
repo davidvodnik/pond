@@ -4,4 +4,5 @@ project(Pond LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
+add_subdirectory(thirdparty/SDL)
 add_subdirectory(src)
