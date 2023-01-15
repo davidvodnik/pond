@@ -6,6 +6,8 @@
 #include <string>
 #include <variant>
 
+const int vertexPosLocation = 0;
+
 auto vertexShaderSource =
     R"glsl(
         #version 140
@@ -45,8 +47,6 @@ std::variant<GLuint, std::string> createShader(const std::string &source,
     return shader;
 }
 
-GLint gVertexPosLocation;
-
 std::variant<GLuint, std::string> createProgram() {
     auto program = glCreateProgram();
 
@@ -54,6 +54,7 @@ std::variant<GLuint, std::string> createProgram() {
     if (std::holds_alternative<std::string>(vertexShader)) {
         return std::get<std::string>(vertexShader);
     }
+    glBindAttribLocation(program, vertexPosLocation, "LVertexPos2D");
     auto fragmentShader =
         createShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
     if (std::holds_alternative<std::string>(fragmentShader)) {
@@ -73,11 +74,6 @@ std::variant<GLuint, std::string> createProgram() {
         log.resize(logLength - 1);
         glGetProgramInfoLog(program, logLength, &logLength, &log[0]);
         return log;
-    }
-
-    gVertexPosLocation = glGetAttribLocation(program, "LVertexPos2D");
-    if (gVertexPosLocation == -1) {
-        return "LVertexPos2D not found";
     }
 
     return program;
@@ -128,14 +124,14 @@ void render() {
     glUseProgram(gProgram);
 
     glBindVertexArray(gVAO);
-    glEnableVertexAttribArray(gVertexPosLocation);
+    glEnableVertexAttribArray(vertexPosLocation);
 
-    glVertexAttribPointer(gVertexPosLocation, 2, GL_FLOAT, GL_FALSE,
+    glVertexAttribPointer(vertexPosLocation, 2, GL_FLOAT, GL_FALSE,
                           2 * sizeof(GLfloat), nullptr);
 
     glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, nullptr);
 
-    glDisableVertexAttribArray(gVertexPosLocation);
+    glDisableVertexAttribArray(vertexPosLocation);
 
     glUseProgram(NULL);
 }
