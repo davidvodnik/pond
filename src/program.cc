@@ -6,19 +6,19 @@
 
 auto vertexShaderSource =
     R"glsl(
-        #version 140
-        in vec2 LVertexPos2D;
+        #version 330 core
+        in vec3 aPos;
         void main() {
-             gl_Position = vec4(LVertexPos2D.x, LVertexPos2D.y, 0, 1 );
+             gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1 );
          }
     )glsl";
 
 auto fragmentShaderSource =
     R"glsl(
-        #version 140
-        out vec4 LFragment;
+        #version 330 core
+        out vec4 FragColor;
         void main() {
-            LFragment = vec4( 1.0, 1.0, 1.0, 1.0 );
+            FragColor = vec4(1.0, 0.5, 0.2, 1.0);
         }
     )glsl";
 
@@ -50,7 +50,7 @@ std::variant<Program, std::string> createProgram() {
     if (std::holds_alternative<std::string>(vertexShader)) {
         return std::get<std::string>(vertexShader);
     }
-    glBindAttribLocation(program, vertexPosLocation, "LVertexPos2D");
+    glBindAttribLocation(program, vertexPosLocation, "aPos");
     auto fragmentShader =
         createShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
     if (std::holds_alternative<std::string>(fragmentShader)) {
