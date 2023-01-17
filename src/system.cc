@@ -10,6 +10,8 @@ System::System(int width, int height) {
         std::terminate();
     }
 
+    boids = Boids{};
+
     program = std::get<Program>(p);
 
     mesh = createMesh();
@@ -18,15 +20,19 @@ System::System(int width, int height) {
 }
 
 void System::update() {
+    boids.update();
+
     auto projectionView = updateCamera(camera);
 
     glUseProgram(program.gProgram);
 
-    auto transformLoc = glGetUniformLocation(program.gProgram, "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
-                       glm::value_ptr(projectionView));
-
-    drawMesh(mesh);
+    for (auto &boid : boids.get_boids()) {
+        glm::mat4 model = glm::translate(glm::mat4(1), boid);
+        auto transformLoc = glGetUniformLocation(program.gProgram, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
+                           glm::value_ptr(projectionView * model));
+        drawMesh(mesh);
+    }
 
     glUseProgram(NULL);
 }

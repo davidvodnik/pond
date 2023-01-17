@@ -1,3 +1,4 @@
+#include "boids.h"
 #include "camera.h"
 #include "mesh.h"
 #include "program.h"
@@ -12,4 +13,5 @@ private:
     Camera camera{};
     Mesh mesh{};
     Program program{};
+    Boids boids{};
 };

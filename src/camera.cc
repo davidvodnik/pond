@@ -7,15 +7,16 @@ glm::mat4 updateCamera(const Camera &camera) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     static float angle = 0.0f;
-    float x = sin(angle);
-    float z = cos(angle);
-    angle += 0.01f;
+    float distance = 80;
+    float x = sin(angle) * distance;
+    float z = cos(angle) * distance;
+    // angle += 0.01f;
 
     glm::mat4 view =
-        glm::lookAt(glm::vec3(x, 1.0f, z), glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::lookAt(glm::vec3(x, distance, z), glm::vec3(0.0f, 0.0f, 0.0f),
                     glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 projection = glm::perspective(
-        40.0f, (float)camera.width / (float)camera.height, 0.1f, 1000.0f);
+        45.0f, (float)camera.width / (float)camera.height, 0.1f, 1000.0f);
 
     return projection * view;
 }
