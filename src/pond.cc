@@ -5,8 +5,12 @@
 #include <cstddef>
 #include <string>
 
+#include "camera.h"
 #include "mesh.h"
 #include "program.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 int main() {
     SDL_Init(SDL_INIT_VIDEO);
@@ -32,6 +36,8 @@ int main() {
 
     auto mesh = createMesh();
 
+    auto camera = Camera{640, 480};
+
     while (true) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
@@ -41,10 +47,13 @@ int main() {
             }
         }
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        auto projectionView = updateCamera(camera);
 
         glUseProgram(program.gProgram);
+
+        auto transformLoc = glGetUniformLocation(program.gProgram, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
+                           glm::value_ptr(projectionView));
 
         drawMesh(mesh);
 

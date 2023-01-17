@@ -8,8 +8,9 @@ auto vertexShaderSource =
     R"glsl(
         #version 330 core
         in vec3 aPos;
+        uniform mat4 transform;
         void main() {
-             gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1 );
+             gl_Position = transform * vec4(aPos.x, aPos.y, aPos.z, 1 );
          }
     )glsl";
 

@@ -6,4 +6,5 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(thirdparty/SDL)
 add_subdirectory(thirdparty/glew-cmake)
+add_subdirectory(thirdparty/glm)
 add_subdirectory(src)
