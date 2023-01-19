@@ -23,30 +23,33 @@ void Boids::update() {
     // alignment
     for (int t = 0; t < boids.size(); ++t) {
         auto vel = glm::vec3(0);
-        int count = 0;
+        float weigth = 0;
         for (int s = 0; s < boids.size(); ++s) {
-            if (glm::distance(boids[t], boids[s]) < 10.0f) {
-                vel += velocities[s];
-                count++;
+            float d = glm::distance(boids[t], boids[s]);
+            if (d < 20.0f && d > 0.0f) {
+                vel += velocities[s] / d;
+                weigth += 1.0f / d;
             }
         }
-        if (count > 0) {
-            velocities[t] += vel / (float)count * 0.1f;
+        if (weigth > 0) {
+            glm::vec3 avg = vel / weigth;
+            velocities[t] += glm::normalize(avg) * 1.0f;
         }
     }
     // cohesion
     for (int t = 0; t < boids.size(); ++t) {
         auto center = glm::vec3(0);
-        int count = 0;
+        float weigth = 0;
         for (auto &boid : boids) {
-            if (glm::distance(boids[t], boid) < 10.0f) {
-                center += boid;
-                count++;
+            float d = glm::distance(boids[t], boid);
+            if (d < 20.0f && d > 0.0f) {
+                center += boid / d;
+                weigth += 1.0f / d;
             }
         }
-        if (count > 0) {
-            center = center / (float)count;
-            velocities[t] -= (boids[t] - center) * 0.01f;
+        if (weigth > 0) {
+            center = center / weigth;
+            velocities[t] -= glm::normalize(boids[t] - center) * 0.1f;
         }
     }
     for (int t = 0; t < boids.size(); ++t) {
