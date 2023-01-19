@@ -11,7 +11,8 @@ int main() {
 
     SDL_Init(SDL_INIT_VIDEO);
     auto window = SDL_CreateWindow("Pond", 0, 0, width, height,
-                                   SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+                                   (unsigned)SDL_WINDOW_OPENGL |
+                                       SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -30,6 +31,10 @@ int main() {
             switch (e.type) {
             case SDL_QUIT:
                 return 0;
+            case SDL_WINDOWEVENT:
+                if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    system.resize(e.window.data1, e.window.data2);
+                }
             }
         }
 

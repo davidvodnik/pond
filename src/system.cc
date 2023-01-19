@@ -19,6 +19,11 @@ System::System(int width, int height) {
     camera = Camera{width, height};
 }
 
+void System::resize(int width, int height) {
+    camera.width = width;
+    camera.height = height;
+}
+
 void System::update() {
     boids.update();
 

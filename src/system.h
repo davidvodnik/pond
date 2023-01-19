@@ -7,6 +7,7 @@ class System {
 public:
     System(int width, int height);
 
+    void resize(int width, int height);
     void update();
 
 private:
