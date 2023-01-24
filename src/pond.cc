@@ -2,46 +2,74 @@
 #include "SDL.h"
 #include "SDL_events.h"
 #include "SDL_video.h"
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
 
 #include "system.h"
+#include <exception>
+
+struct App {
+    SDL_Window *window{};
+    System sys;
+};
+
+bool mainLoop(App &app) {
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        switch (e.type) {
+        case SDL_QUIT:
+            return false;
+        case SDL_WINDOWEVENT:
+            if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
+                app.sys.resize(e.window.data1, e.window.data2);
+            }
+        }
+    }
+
+    app.sys.update();
+
+    SDL_GL_SwapWindow(app.window);
+
+    return true;
+}
+
+void mainLoopEm(void *arg) {
+    auto app = (App *)arg;
+    mainLoop(*app);
+}
 
 int main() {
     int width = 640;
     int height = 480;
 
     SDL_Init(SDL_INIT_VIDEO);
-    auto window = SDL_CreateWindow("Pond", 0, 0, width, height,
-                                   (unsigned)SDL_WINDOW_OPENGL |
-                                       SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    auto window =
+        SDL_CreateWindow("Pond", 0, 0, width, height,
+                         (unsigned)SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
+#ifdef __EMSCRIPTEN__
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#else
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                         SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
 
     SDL_GL_CreateContext(window);
 
     glewInit();
 
-    System system(width, height);
+    auto sys = System(width, height);
 
-    while (true) {
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            switch (e.type) {
-            case SDL_QUIT:
-                return 0;
-            case SDL_WINDOWEVENT:
-                if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    system.resize(e.window.data1, e.window.data2);
-                }
-            }
-        }
+    auto app = App{window, sys};
 
-        system.update();
-
-        SDL_GL_SwapWindow(window);
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop_arg(mainLoopEm, &app, 0, 1);
+#else
+    while (mainLoop(app)) {
     }
-
-    return 0;
+#endif
 }

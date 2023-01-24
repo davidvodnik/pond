@@ -6,7 +6,6 @@
 
 auto vertexShaderSource =
     R"glsl(
-        #version 330 core
         in vec3 aPos;
         uniform mat4 transform;
         void main() {
@@ -16,7 +15,7 @@ auto vertexShaderSource =
 
 auto fragmentShaderSource =
     R"glsl(
-        #version 330 core
+        precision mediump float;
         out vec4 FragColor;
         void main() {
             FragColor = vec4(1.0, 0.5, 0.2, 1.0);
@@ -25,9 +24,14 @@ auto fragmentShaderSource =
 
 std::variant<GLuint, std::string> createShader(const std::string &source,
                                                GLenum type) {
+#if __EMSCRIPTEN__
+    auto fullSource = "#version 300 es\n" + source;
+#else
+    auto fullSource = "#version 330 core\n" + source;
+#endif
     GLuint shader = glCreateShader(type);
-    auto x = source.c_str();
-    glShaderSource(shader, 1, &x, nullptr);
+    auto cSource = fullSource.c_str();
+    glShaderSource(shader, 1, &cSource, nullptr);
     glCompileShader(shader);
 
     GLint shaderCompiled = GL_FALSE;

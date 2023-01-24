@@ -1,5 +1,6 @@
 #include "system.h"
 #include "glm/ext/matrix_transform.hpp"
+#include <exception>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
