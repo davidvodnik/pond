@@ -9,7 +9,7 @@ Boids::Boids() {
     }
 }
 
-void Boids::update() {
+void Boids::update(float deltaTime) {
     // separation
     for (int t = 0; t < boids.size(); ++t) {
         auto close = glm::vec3(0);
@@ -18,7 +18,7 @@ void Boids::update() {
                 close += boids[t] - boid;
             }
         }
-        velocities[t] += close * 0.1f;
+        velocities[t] += close * deltaTime * 10.0f;
     }
     // alignment
     for (int t = 0; t < boids.size(); ++t) {
@@ -33,7 +33,7 @@ void Boids::update() {
         }
         if (weigth > 0) {
             glm::vec3 avg = vel / weigth;
-            velocities[t] += glm::normalize(avg) * 1.0f;
+            velocities[t] += glm::normalize(avg) * deltaTime * 100.0f;
         }
     }
     // cohesion
@@ -49,13 +49,14 @@ void Boids::update() {
         }
         if (weigth > 0) {
             center = center / weigth;
-            velocities[t] -= glm::normalize(boids[t] - center) * 0.1f;
+            velocities[t] -=
+                glm::normalize(boids[t] - center) * deltaTime * 10.0f;
         }
     }
     for (int t = 0; t < boids.size(); ++t) {
         if (glm::abs(boids[t].x) > 50 || glm::abs(boids[t].y) > 50 ||
             glm::abs(boids[t].z) > 50) {
-            velocities[t] -= boids[t] * 0.1f;
+            velocities[t] -= boids[t] * deltaTime * 10.0f;
         }
     }
     for (int t = 0; t < boids.size(); ++t) {
@@ -63,7 +64,7 @@ void Boids::update() {
         if (speed > 50) {
             velocities[t] = velocities[t] * 50.0f / speed;
         }
-        boids[t] += velocities[t] * 0.01f;
+        boids[t] += velocities[t] * deltaTime * 1.0f;
     }
 }
 

@@ -8,7 +8,7 @@ public:
     System(int width, int height);
 
     void resize(int width, int height);
-    void update();
+    void update(float deltaTime);
 
 private:
     Camera camera{};
