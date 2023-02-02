@@ -1,6 +1,7 @@
 #include "GL/glew.h"
 #include "SDL.h"
 #include "SDL_events.h"
+#include "SDL_timer.h"
 #include "SDL_video.h"
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
@@ -12,6 +13,7 @@
 struct App {
     SDL_Window *window{};
     System sys;
+    Uint64 lastTime{};
 };
 
 bool mainLoop(App &app) {
@@ -27,9 +29,20 @@ bool mainLoop(App &app) {
         }
     }
 
-    app.sys.update();
+    Uint64 currentTime = SDL_GetPerformanceCounter();
+
+    auto deltaTime = (double)(currentTime - app.lastTime) /
+                     (double)SDL_GetPerformanceFrequency();
+
+    if (deltaTime > 0.1) {
+        deltaTime = 0.1;
+    }
+
+    app.sys.update((float)deltaTime);
 
     SDL_GL_SwapWindow(app.window);
+
+    app.lastTime = currentTime;
 
     return true;
 }
@@ -64,7 +77,7 @@ int main() {
 
     auto sys = System(width, height);
 
-    auto app = App{window, sys};
+    auto app = App{window, sys, SDL_GetPerformanceCounter()};
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop_arg(mainLoopEm, &app, 0, 1);

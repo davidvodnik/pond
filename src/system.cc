@@ -25,8 +25,8 @@ void System::resize(int width, int height) {
     camera.height = height;
 }
 
-void System::update() {
-    boids.update();
+void System::update(float deltaTime) {
+    boids.update(deltaTime);
 
     auto projectionView = updateCamera(camera);
 
