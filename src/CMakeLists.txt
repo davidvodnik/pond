@@ -5,6 +5,8 @@ add_executable(pond
     boids.cc
     rendering/program.cc
     rendering/mesh.cc
+    rendering/renderer.cc
+    rendering/renderer.h
 )
 if (EMSCRIPTEN)
 target_link_libraries(pond PRIVATE glm::glm)

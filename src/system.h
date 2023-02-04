@@ -1,7 +1,6 @@
 #include "boids.h"
 #include "camera.h"
-#include "rendering/mesh.h"
-#include "rendering/program.h"
+#include "rendering/renderer.h"
 
 class System {
 public:
@@ -11,8 +10,7 @@ public:
     void update(float deltaTime);
 
 private:
-    Camera camera{};
-    Mesh mesh{};
-    Program program{};
-    Boids boids{};
+    Camera camera;
+    Renderer renderer;
+    Boids boids;
 };
