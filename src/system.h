@@ -1,7 +1,7 @@
 #include "boids.h"
 #include "camera.h"
-#include "mesh.h"
-#include "program.h"
+#include "rendering/mesh.h"
+#include "rendering/program.h"
 
 class System {
 public:

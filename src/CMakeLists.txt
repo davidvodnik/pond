@@ -1,4 +1,11 @@
-add_executable(pond pond.cc system.cc program.cc mesh.cc camera.cc boids.cc)
+add_executable(pond
+    pond.cc
+    system.cc
+    camera.cc
+    boids.cc
+    rendering/program.cc
+    rendering/mesh.cc
+)
 if (EMSCRIPTEN)
 target_link_libraries(pond PRIVATE glm::glm)
 target_compile_options(pond PRIVATE
