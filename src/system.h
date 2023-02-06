@@ -7,7 +7,7 @@ public:
     System(int width, int height);
 
     void resize(int width, int height);
-    void update(float deltaTime);
+    void update(float deltaTime, bool touch);
 
 private:
     Camera camera;

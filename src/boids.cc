@@ -10,7 +10,7 @@ Boids::Boids() {
     }
 }
 
-void Boids::update(float deltaTime) {
+void Boids::update(float deltaTime, bool touch) {
     // separation
     for (int t = 0; t < boids.size(); ++t) {
         auto close = glm::vec3(0);
