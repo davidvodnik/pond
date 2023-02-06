@@ -14,7 +14,7 @@ glm::mat4 updateCamera(const Camera &camera) {
     // angle += 0.01f;
 
     glm::mat4 view =
-        glm::lookAt(glm::vec3(x, distance, z), glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::lookAt(glm::vec3(0, 0, -distance), glm::vec3(0.0f, 0.0f, 0.0f),
                     glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 projection = glm::perspective(
         45.0f, (float)camera.width / (float)camera.height, 0.1f, 1000.0f);

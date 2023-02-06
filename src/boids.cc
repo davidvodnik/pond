@@ -60,6 +60,15 @@ void Boids::update(float deltaTime) {
         }
     }
     for (int t = 0; t < boids.size(); ++t) {
+        auto zdir = glm::vec3(0, 0, 1);
+        auto intrs = glm::dot(zdir, boids[t]);
+        auto f = boids[t] - intrs * zdir;
+        float d = glm::length(f);
+        ;
+        velocities[t] -=
+            (1.0f * d * d * d * d * deltaTime * 1.0f) * glm::normalize(f);
+    }
+    for (int t = 0; t < boids.size(); ++t) {
         auto speed = glm::length(velocities[t]);
         if (speed > 50) {
             velocities[t] = velocities[t] * 50.0f / speed;
