@@ -14,6 +14,9 @@ struct App {
     SDL_Window *window{};
     System sys;
     Uint64 lastTime{};
+    bool touch;
+    int x;
+    int y;
 };
 
 bool mainLoop(App &app) {
@@ -26,6 +29,21 @@ bool mainLoop(App &app) {
             if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
                 app.sys.resize(e.window.data1, e.window.data2);
             }
+            break;
+        case SDL_MOUSEMOTION:
+            app.x = e.motion.x;
+            app.y = e.motion.y;
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            app.touch = true;
+            app.x = e.motion.x;
+            app.y = e.motion.y;
+            break;
+        case SDL_MOUSEBUTTONUP:
+            app.touch = false;
+            app.x = e.motion.x;
+            app.y = e.motion.y;
+            break;
         }
     }
 
@@ -38,7 +56,7 @@ bool mainLoop(App &app) {
         deltaTime = 0.1;
     }
 
-    app.sys.update((float)deltaTime);
+    app.sys.update((float)deltaTime, app.touch);
 
     SDL_GL_SwapWindow(app.window);
 
