@@ -9,7 +9,7 @@ Boids::Boids() {
     }
 }
 
-void Boids::update(float deltaTime, bool touch) {
+void Boids::update(float deltaTime, bool touch, glm::vec3 dir) {
     // separation
     for (int t = 0; t < boids.size(); ++t) {
         auto close = glm::vec3(0);
@@ -60,13 +60,14 @@ void Boids::update(float deltaTime, bool touch) {
         }
     }
     if (touch) {
+        auto origin = glm::vec3(0, 0, -80);
         for (int t = 0; t < boids.size(); ++t) {
-            auto zdir = glm::vec3(0, 0, 1);
-            auto intrs = glm::dot(zdir, boids[t]);
+            auto zdir = glm::normalize(dir); // glm::vec3(0, 0, 1);
+            auto intrs =
+                origin + glm::dot(zdir, (boids[t] - glm::vec3(0, 0, -80)));
             auto f = boids[t] - intrs * zdir;
             float d = glm::length(f);
-            velocities[t] -=
-                (1.0f * d * d * deltaTime * 1.0f) * glm::normalize(f);
+            velocities[t] -= (d * d * deltaTime * 1.0f) * glm::normalize(f);
         }
     }
     for (int t = 0; t < boids.size(); ++t) {

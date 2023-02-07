@@ -56,7 +56,7 @@ bool mainLoop(App &app) {
         deltaTime = 0.1;
     }
 
-    app.sys.update((float)deltaTime, app.touch);
+    app.sys.update((float)deltaTime, app.touch, app.x, app.y);
 
     SDL_GL_SwapWindow(app.window);
 
