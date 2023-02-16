@@ -12,4 +12,5 @@ public:
 private:
     std::vector<glm::vec3> boids;
     std::vector<glm::vec3> velocities;
+    std::vector<glm::vec3> velocities_external;
 };

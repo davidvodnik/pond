@@ -6,6 +6,7 @@ Boids::Boids() {
     for (int i = 0; i < 500; ++i) {
         boids.emplace_back(glm::linearRand(glm::vec3(-50), glm::vec3(50)));
         velocities.emplace_back(glm::linearRand(glm::vec3(-1), glm::vec3(1)));
+        velocities_external.emplace_back();
     }
 }
 
@@ -56,7 +57,7 @@ void Boids::update(float deltaTime, bool touch, glm::vec3 dir) {
     for (int t = 0; t < boids.size(); ++t) {
         if (glm::abs(boids[t].x) > 50 || glm::abs(boids[t].y) > 50 ||
             glm::abs(boids[t].z) > 50) {
-            velocities[t] -= boids[t] * deltaTime * 10.0f;
+            velocities_external[t] -= boids[t] * deltaTime * 10.0f;
         }
     }
     if (touch) {
@@ -67,7 +68,8 @@ void Boids::update(float deltaTime, bool touch, glm::vec3 dir) {
                 origin + glm::dot(zdir, (boids[t] - glm::vec3(0, 0, -80)));
             auto f = boids[t] - intrs * zdir;
             float d = glm::length(f);
-            velocities[t] -= (d * d * deltaTime * 1.0f) * glm::normalize(f);
+            velocities_external[t] -=
+                (d * d * deltaTime * 10.0f) * glm::normalize(f);
         }
     }
     for (int t = 0; t < boids.size(); ++t) {
@@ -75,7 +77,8 @@ void Boids::update(float deltaTime, bool touch, glm::vec3 dir) {
         if (speed > 50) {
             velocities[t] = velocities[t] * 50.0f / speed;
         }
-        boids[t] += velocities[t] * deltaTime * 1.0f;
+        boids[t] += (velocities[t] + velocities_external[t]) * deltaTime * 1.0f;
+        velocities_external[t] *= 0.5f;
     }
 }
 
