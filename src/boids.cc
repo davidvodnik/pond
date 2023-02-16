@@ -6,6 +6,7 @@ Boids::Boids() {
     for (int i = 0; i < 500; ++i) {
         boids.emplace_back(glm::linearRand(glm::vec3(-50), glm::vec3(50)));
         velocities.emplace_back(glm::linearRand(glm::vec3(-1), glm::vec3(1)));
+        forces.emplace_back(glm::linearRand(glm::vec3(-1), glm::vec3(1)));
     }
 }
 
@@ -18,7 +19,7 @@ void Boids::update(float deltaTime) {
                 close += boids[t] - boid;
             }
         }
-        velocities[t] += close * deltaTime * 10.0f;
+        forces[t] += close * 10.0f;
     }
     // alignment
     for (int t = 0; t < boids.size(); ++t) {
@@ -33,7 +34,7 @@ void Boids::update(float deltaTime) {
         }
         if (weigth > 0) {
             glm::vec3 avg = vel / weigth;
-            velocities[t] += glm::normalize(avg) * deltaTime * 100.0f;
+            forces[t] += glm::normalize(avg) * 100.0f;
         }
     }
     // cohesion
@@ -49,22 +50,25 @@ void Boids::update(float deltaTime) {
         }
         if (weigth > 0) {
             center = center / weigth;
-            velocities[t] -=
-                glm::normalize(boids[t] - center) * deltaTime * 10.0f;
+            forces[t] -= glm::normalize(boids[t] - center) * 10.0f;
         }
     }
     for (int t = 0; t < boids.size(); ++t) {
         if (glm::abs(boids[t].x) > 50 || glm::abs(boids[t].y) > 50 ||
             glm::abs(boids[t].z) > 50) {
-            velocities[t] -= boids[t] * deltaTime * 10.0f;
+            forces[t] -= boids[t] * 10.0f;
         }
     }
     for (int t = 0; t < boids.size(); ++t) {
-        auto speed = glm::length(velocities[t]);
-        if (speed > 50) {
-            velocities[t] = velocities[t] * 50.0f / speed;
+        forces[t] -= velocities[t] * 2.0f;
+        auto f = glm::length(forces[t]);
+        if (f > 50) {
+            forces[t] = forces[t] * 50.0f / f;
         }
+        velocities[t] += forces[t] * deltaTime;
+        auto speed = glm::length(velocities[t]);
         boids[t] += velocities[t] * deltaTime * 1.0f;
+        forces[t] = glm::vec3(0, 0, 0);
     }
 }
 
