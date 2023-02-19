@@ -21,6 +21,7 @@ bool mainLoop(App &app) {
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
         case SDL_QUIT:
+            SDL_Quit();
             return false;
         case SDL_WINDOWEVENT:
             if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
