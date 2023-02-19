@@ -3,7 +3,7 @@
 #include <glm/gtc/random.hpp>
 
 Boids::Boids() {
-    for (int i = 0; i < 500; ++i) {
+    for (int i = 0; i < 512; ++i) {
         boids.emplace_back(glm::linearRand(glm::vec3(-50), glm::vec3(50)));
         velocities.emplace_back(glm::linearRand(glm::vec3(-1), glm::vec3(1)));
         forces.emplace_back(glm::linearRand(glm::vec3(-1), glm::vec3(1)));
@@ -54,17 +54,29 @@ void Boids::update(float deltaTime, bool touch) {
         }
     }
     for (int t = 0; t < boids.size(); ++t) {
+        forces[t] -= velocities[t] * deltaTime * 100.0f;
+        auto f = glm::length(forces[t]);
+        if (f > 100) {
+            forces[t] = forces[t] * 100.0f / f;
+        }
+    }
+    for (int t = 0; t < boids.size(); ++t) {
         if (glm::abs(boids[t].x) > 50 || glm::abs(boids[t].y) > 50 ||
             glm::abs(boids[t].z) > 50) {
             forces[t] -= boids[t] * 10.0f;
         }
     }
-    for (int t = 0; t < boids.size(); ++t) {
-        forces[t] -= velocities[t] * 2.0f;
-        auto f = glm::length(forces[t]);
-        if (f > 50) {
-            forces[t] = forces[t] * 50.0f / f;
+    if (touch) {
+        for (int t = 0; t < boids.size(); ++t) {
+            auto x = t % 8;
+            auto y = (t / 8) % 8;
+            auto z = (t / 8 / 8) % 8;
+            auto c = (glm::vec3(x, y, z) - 4.0f) * 5.0f;
+            forces[t] += (c - boids[t]) * 100.0f;
+            forces[t] -= velocities[t] * deltaTime * 500.0f;
         }
+    }
+    for (int t = 0; t < boids.size(); ++t) {
         velocities[t] += forces[t] * deltaTime;
         auto speed = glm::length(velocities[t]);
         boids[t] += velocities[t] * deltaTime * 1.0f;
