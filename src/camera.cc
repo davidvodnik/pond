@@ -11,7 +11,7 @@ glm::mat4 updateCamera(const Camera &camera) {
     float distance = 80;
     float x = sin(angle) * distance;
     float z = cos(angle) * distance;
-    // angle += 0.01f;
+    angle += 0.01f;
 
     glm::mat4 view =
         glm::lookAt(glm::vec3(x, distance, z), glm::vec3(0.0f, 0.0f, 0.0f),
