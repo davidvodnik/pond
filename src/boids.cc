@@ -10,7 +10,7 @@ Boids::Boids() {
     }
 }
 
-void Boids::update(float deltaTime, bool touch) {
+void Boids::update(float deltaTime, bool touch, glm::vec3 pos) {
     // separation
     for (int t = 0; t < boids.size(); ++t) {
         auto close = glm::vec3(0);
@@ -71,8 +71,8 @@ void Boids::update(float deltaTime, bool touch) {
             auto x = t % 8;
             auto y = (t / 8) % 8;
             auto z = (t / 8 / 8) % 8;
-            auto c = (glm::vec3(x, y, z) - 4.0f) * 5.0f;
-            forces[t] += (c - boids[t]) * 100.0f;
+            auto c = (glm::vec3(x, y, z) - 4.0f) * 5.0f + pos;
+            forces[t] += (c - boids[t]) * 300.0f;
             forces[t] -= velocities[t] * deltaTime * 500.0f;
         }
     }

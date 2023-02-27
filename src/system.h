@@ -6,8 +6,8 @@ class System {
 public:
     System(int width, int height);
 
-    void resize(int width, int height);
-    void update(float deltaTime, bool touch);
+    void resize(glm::ivec2 screenSize);
+    void update(float deltaTime, bool touch, int x, int y);
 
 private:
     Camera camera;

@@ -5,7 +5,7 @@ class Boids {
 public:
     Boids();
 
-    void update(float deltaTime, bool touch);
+    void update(float deltaTime, bool touch, glm::vec3 pos);
 
     [[nodiscard]] std::vector<glm::vec3> const &get_boids() const;
 
