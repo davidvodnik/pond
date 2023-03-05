@@ -8,6 +8,7 @@ add_executable(pond
     rendering/renderer.cc
     rendering/renderer.h
 )
+target_include_directories(pond PRIVATE .)
 if (EMSCRIPTEN)
 target_link_libraries(pond PRIVATE glm::glm)
 target_compile_options(pond PRIVATE
