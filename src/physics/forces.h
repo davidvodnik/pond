@@ -32,6 +32,16 @@ auto box(float radius, float weigth) {
     };
 }
 
+auto sphere(float radius, float weigth) {
+    return [=](auto &forces, auto &positions) {
+        for (int t = 0; t < positions.size(); ++t) {
+            if (glm::length(positions[t]) > radius) {
+                forces[t] -= positions[t] * weigth;
+            }
+        }
+    };
+}
+
 auto shape(glm::vec3 pos, float distance, float coeff, float drag_coeff) {
     return [=](auto &forces, const auto &velocities, const auto &positions,
                float deltaTime) {

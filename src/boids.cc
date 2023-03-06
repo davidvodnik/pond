@@ -17,7 +17,7 @@ void Boids::update(float deltaTime, bool touch, glm::vec3 pos) {
     cohesion(10.0f, 20.0f)(forces, velocities, positions);
     limit(100)(forces);
     drag(1.2)(forces, velocities);
-    box(50, 10.0f)(forces, positions);
+    sphere(30, 10.0f)(forces, positions);
     if (touch) {
         shape(pos, 3.0f, 300.0f, 20.0f)(forces, velocities, positions,
                                         deltaTime);
