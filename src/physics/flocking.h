@@ -4,13 +4,21 @@
 auto separation(float coeff, float radius) {
     return [=](auto &forces, const auto &positions) {
         for (int t = 0; t < positions.size(); ++t) {
-            auto close = glm::vec3(0);
+            auto center = glm::vec3(0);
+            float weigth = 0;
             for (auto &boid : positions) {
-                if (glm::distance(positions[t], boid) < radius) {
-                    close += positions[t] - boid;
+                float d = glm::distance(positions[t], boid);
+                if (d < radius && d > 0.0f) {
+                    center += boid / d;
+                    weigth += 1.0f / d;
                 }
             }
-            forces[t] += close * coeff;
+            if (weigth > 0) {
+                center = center / weigth;
+                auto d = glm::length(positions[t] - center);
+                forces[t] +=
+                    glm::normalize(positions[t] - center) / d / d * coeff;
+            }
         }
     };
 }

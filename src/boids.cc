@@ -12,7 +12,7 @@ Boids::Boids() {
 }
 
 void Boids::update(float deltaTime, bool touch, glm::vec3 pos) {
-    separation(10.0f, 7.0f)(forces, positions);
+    separation(100.0f, 7.0f)(forces, positions);
     alignment(100.0f, 20.0f)(forces, velocities, positions);
     cohesion(10.0f, 20.0f)(forces, velocities, positions);
     limit(100)(forces);
